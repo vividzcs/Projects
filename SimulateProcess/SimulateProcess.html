@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>模仿进程</title>
+</head>
+<style>
+	table{
+		border-collapse: collapse;
+	}
+	td{
+		border: 1px solid black;
+		width: 100px;
+	}
+	#blockT{
+		background-color: #ec583a;
+	}
+
+	#exitT{
+		background-color: #677077;
+	}
+	#readyT{
+		background-color: #12CBC4;
+	}
+	#runningT{
+		background-color: #C4E538
+	}
+	#createT{
+		background-color: #89bdd3;
+	}
+</style>
+<script type="text/javascript" src="./module.js"></script>
+<body onkeydown="module.getComment();">
+	<article>
+		处于create队列的进程:
+		<table id="create">
+			<tr id="createT">
+				<td>进程ID</td>				
+				<td>执行剩余时间</td>
+				<td>时间片</td>
+				<td>优先级</td>
+				<td>剩余阻塞时间</td>
+				<td>状态</td>
+			</tr>
+		
+		</table>
+
+	</article><br/><br/><br/>
+	<article>
+		处于ready队列的进程:
+		<table id="ready">
+			<tr id="readyT">
+				<td>进程ID</td>				
+				<td>执行剩余时间</td>
+				<td>时间片</td>
+				<td>优先级</td>
+				<td>剩余阻塞时间</td>
+				<td>状态</td>
+			</tr>
+		</table>
+
+	</article><br/><br/><br/>
+	<article>
+		处于block队列的进程:
+		<table id="block">
+			<tr id="blockT">
+				<td>进程ID</td>				
+				<td>执行剩余时间</td>
+				<td>时间片</td>
+				<td>优先级</td>
+				<td>剩余阻塞时间</td>
+				<td>状态</td>
+			</tr>
+		</table>
+
+	</article><br/><br/><br/>
+	<article>
+		处于exit队列的进程:
+		<table id="exit">
+			<tr id="exitT">
+				<td>进程ID</td>				
+				<td>执行剩余时间</td>
+				<td>时间片</td>
+				<td>优先级</td>
+				<td>剩余阻塞时间</td>
+				<td>状态</td>
+			</tr>
+		</table>
+
+	</article><br/><br/><br/>
+	<article>
+		当前正在运行的进程:
+		<table id="running">
+			<tr id="runningT">
+				<td>进程ID</td>				
+				<td>执行剩余时间</td>
+				<td>时间片</td>
+				<td>优先级</td>
+				<td>剩余阻塞时间</td>
+				<td>状态</td>
+			</tr>
+		</table>
+
+	</article>
+	<span id="operate"></span> 
+	<span style="float:right;color:#006266">
+	键盘按键提示:<br/>
+	s(83) : 开始演示<br/>
+	q(81) : 结束演示<br/>
+	c(67) : 往ready队列添加一个进程 (新加的进程优先级默认为5)<br/>
+	b(66) : 将当前正在运行的进程阻塞  (默认阻塞10s)
+	</span>
+</body>
+<script>
+	module.dispatch();
+	var _create = document.getElementById('create');	
+	var _ready = document.getElementById('ready');
+	var _block = document.getElementById('block');
+	var _exit = document.getElementById('exit');
+	var _running = document.getElementById('running');
+	var operate = document.getElementById('operate');
+	
+	function flushHtml(){
+		var str = '<tr id="createT"><td>进程ID</td><td>执行剩余时间</td><td>时间片</td><td>优先级</td><td>剩余阻塞时间</td><td>状态</td></tr>';
+		if(module._create.length != 0){
+			for(var i in module._create){
+			var createQ = module._create[i]
+			str += '<tr><td>'+ createQ.identifier +
+			'</td><td>'+ createQ.time +'</td><td>'+ createQ.time_piece+'</td><td>'+ createQ.priority +
+			'</td><td>'+ createQ.block_time +'</td><td>'+ createQ.status +'</td></tr>';
+			_create.innerHTML = str;
+			}	
+		}else{
+			_create.innerHTML = str;
+		}
+		
+
+		str = '<tr id="readyT"><td>进程ID</td><td>执行剩余时间</td><td>时间片</td><td>优先级</td><td>剩余阻塞时间</td><td>状态</td></tr>';
+		// console.log('_ready:'+module._ready);
+		if(module._ready.length != 0){
+			for(var i in module._ready){
+			var readyQ = module._ready[i]
+			str += '<tr><td>'+ readyQ.identifier +
+			'</td><td>'+ readyQ.time +'</td><td>'+ readyQ.time_piece+'</td><td>'+ readyQ.priority +
+			'</td><td>'+ readyQ.block_time +'</td><td>'+ readyQ.status +'</td></tr>';
+			_ready.innerHTML = str;
+			}
+		}else{
+			_ready.innerHTML = str;
+		}
+		
+
+		str = '<tr id="blockT"><td>进程ID</td><td>执行剩余时间</td><td>时间片</td><td>优先级</td><td>剩余阻塞时间</td><td>状态</td></tr>';
+		if(module._block.length != 0){
+			for(var i in module._block){
+			var blockQ = module._block[i]
+			str += '<tr><td>'+ blockQ.identifier +
+			'</td><td>'+ blockQ.time +'</td><td>'+ blockQ.time_piece+'</td><td>'+ blockQ.priority +
+			'</td><td>'+ blockQ.block_time +'</td><td>'+ blockQ.status +'</td></tr>';
+			_block.innerHTML = str;
+			}
+		}else{
+			_block.innerHTML = str;
+		}
+		
+
+		str = '<tr id="exitT"><td>进程ID</td><td>执行剩余时间</td><td>时间片</td><td>优先级</td><td>剩余阻塞时间</td><td>状态</td></tr>';
+		if(module._exit.length != 0){
+			for(var i in module._exit){
+			var exitQ = module._exit[i]
+			str += '<tr><td>'+ exitQ.identifier +
+			'</td><td>'+ exitQ.time +'</td><td>'+ exitQ.time_piece+'</td><td>'+ exitQ.priority +
+			'</td><td>'+ exitQ.block_time +'</td><td>'+ exitQ.status +'</td></tr>';
+			_exit.innerHTML = str;
+			}
+		}else{
+			_exit.innerHTML = str;
+		}
+		
+
+		str = '<tr id="runningT"><td>进程ID</td><td>执行剩余时间</td><td>时间片</td><td>优先级</td><td>剩余阻塞时间</td><td>状态</td></tr>';
+		if(module._running.length != 0){
+			for(var i in module._running){
+			var runningQ = module._running[i]
+			str += '<tr><td>'+ runningQ.identifier +
+			'</td><td>'+ runningQ.time +'</td><td>'+ runningQ.time_piece+'</td><td>'+ runningQ.priority +
+			'</td><td>'+ runningQ.block_time +'</td><td>'+ runningQ.status +'</td></tr>';
+			_running.innerHTML = str;
+			}
+		}else{
+			_running.innerHTML = str;
+		}
+		
+	}
+
+	setInterval(flushHtml,1000)
+		
+</script>
+</html>
