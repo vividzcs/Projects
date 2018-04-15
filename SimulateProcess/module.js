@@ -9,7 +9,7 @@ var module = (function(){
 	var _block = []; //处于block队列的进程
 	var _running = []; //处于running状态的进程
 	var _exit = []; //退出态的进程
-	var identifiers = []; //存不是退出态的所有进程的标识符
+	var identifiers = []; //存不是退出态的所有进程的标识符identifiers_exit_running_block_ready_create
 	var running_timer = null; //运行状态对象的定时器
 	var block_timer = null; //堵塞态的定时器
 	var create_timer = null; //创建态的定时器
@@ -32,7 +32,16 @@ var module = (function(){
 		var pcb = new PCB(default_priority,default_time_piece);
 		//将创建的进程加入队列
 		_create.push(pcb);
-		operate.innerHTML = "创建了一个进程"
+		showMes("创建了一个进程")
+	}
+
+	function showMes(mes){
+		var date = new Date();
+		operate.innerHTML += (date.getFullYear() + '-' + (date.getMonth()+1) +
+						'-' + date.getDate() + ' ' + date.getHours() + 
+						':' + date.getMinutes() + ':' + date.getSeconds() + 
+						 ':' + mes + '\n'
+			)
 	}
 
 	/**
@@ -41,7 +50,9 @@ var module = (function(){
 	var dispatch = function(){
 		//先将_running的放到_ready队列
 		if(_running.length != 0){
-			_ready.push(_running.shift());
+			var process = _running.shift();
+			_ready.push(process);
+			showMes('进程'+ process.identifier +'时间片用完进入ready态');
 		}
 		
 		//从_ready队列取一个运行
@@ -50,7 +61,7 @@ var module = (function(){
 			process.time_piece = default_time_piece;
 			_running.push(process);
 			//console.log('shift:' + _running)
-			operate.innerHTML = "分配了一个进程到running: " + process.identifier;
+			showMes('分配了一个进程'+ process.identifier +'到running');
 		}
 		
 	}
@@ -69,20 +80,23 @@ var module = (function(){
 			case 83:  //开始演示
 				if(is_start == 0) {  //如果是刚开始,新创建一个进程,并开始running
 						is_start = 1;
+						showMes('开始演示')
 						create();
 						//启动管理器
 						create_timer = setInterval(create_manager,1000);
 						running_timer = setInterval(running_count_down,1000);
 						block_timer = setInterval(block_count_down,1000);
+						
 				}
 				break;
 			case 81:  //结束演示
-				window.location.href = window.location.href;
+				if(is_start == 1){
+					window.location.href = window.location.href;
+				}
 				break;
 			case 67:  //往_create队列添加一个进程 (新加的进程优先级默认为5)
 				if(is_start == 1){
-					var pcb = new PCB(default_priority);
-					_create.push(pcb)
+					create()
 				}
 				break;
 			case 66:  //将当前正在运行的进程阻塞  (默认阻塞10s)
@@ -90,7 +104,7 @@ var module = (function(){
 					var process = _running.shift();
 					process.block_time = default_block_time;
 					_block.push(process);
-					operate.innerHTML = '阻塞了一个进程: ' + process.identifier;
+					showMes('阻塞了一个进程: ' + process.identifier);
 				}
 				
 
@@ -146,13 +160,14 @@ var module = (function(){
 				var process = _running.pop();
 				process.status = 0;
 				_exit.push(process);
+				showMes('进程' + process.identifier + '进入退出态' )
 				
 				return;
 			}
 
 			if(_running[0].time_piece == 0){
 				// clearInterval(running_timer);  //没必要清空
-				_ready.push(_running.shift());
+				// _ready.push(_running.shift()); //dispatch里面会处理
 				dispatch(); //重新分配进行去运行
 				//
 				return;
@@ -175,6 +190,7 @@ var module = (function(){
 					var process = _block[i];
 					_block.splice(i,1);
 					_ready.push(process);
+					showMes('进程'+ process.identifier + '阻塞事件完毕,进入ready态' )
 				}
 			}
 		}
