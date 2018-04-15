@@ -38,11 +38,15 @@
 		color: white;
 		border-color: white;
 	}
+	.queue{
+		font-size: 30px;
+		font-weight: bolder;
+	}
 </style>
 <script type="text/javascript" src="./module.js"></script>
 <body onkeydown="module.getComment();">
 	<article>
-		处于create队列的进程:
+		处于<span class="queue">create</span>队列的进程:
 		<table id="create">
 			<tr id="createT">
 				<td>进程ID</td>				
@@ -55,9 +59,9 @@
 		
 		</table>
 
-	</article><br/><br/><br/>
+	</article><br/>
 	<article>
-		处于ready队列的进程:
+		处于<span class="queue">ready</span>队列的进程:
 		<table id="ready">
 			<tr id="readyT">
 				<td>进程ID</td>				
@@ -69,9 +73,9 @@
 			</tr>
 		</table>
 
-	</article><br/><br/><br/>
+	</article><br/>
 	<article>
-		处于block队列的进程:
+		处于<span class="queue">block</span>队列的进程:
 		<table id="block">
 			<tr id="blockT">
 				<td>进程ID</td>				
@@ -83,9 +87,9 @@
 			</tr>
 		</table>
 
-	</article><br/><br/><br/>
+	</article><br/>
 	<article>
-		处于exit队列的进程:
+		处于<span class="queue">exit</span>队列的进程:
 		<table id="exit">
 			<tr id="exitT">
 				<td>进程ID</td>				
@@ -97,9 +101,9 @@
 			</tr>
 		</table>
 
-	</article><br/><br/><br/>
+	</article><br/>
 	<article>
-		当前正在运行的进程:
+		当前正在<span class="queue">running</span>的进程:
 		<table id="running">
 			<tr id="runningT">
 				<td>进程ID</td>				

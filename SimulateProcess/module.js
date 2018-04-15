@@ -80,14 +80,19 @@ var module = (function(){
 				window.location.href = window.location.href;
 				break;
 			case 67:  //往_create队列添加一个进程 (新加的进程优先级默认为5)
-				var pcb = new PCB(default_priority);
-				_create.push(pcb)
+				if(is_start == 1){
+					var pcb = new PCB(default_priority);
+					_create.push(pcb)
+				}
 				break;
 			case 66:  //将当前正在运行的进程阻塞  (默认阻塞10s)
-				var process = _running.shift();
-				process.block_time = default_block_time;
-				_block.push(process);
-				operate.innerHTML = '阻塞了一个进程: ' + process.identifier;
+				if(_running != null){
+					var process = _running.shift();
+					process.block_time = default_block_time;
+					_block.push(process);
+					operate.innerHTML = '阻塞了一个进程: ' + process.identifier;
+				}
+				
 
 				break;
 		}
