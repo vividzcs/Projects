@@ -117,7 +117,7 @@ var module = (function(){
 	function create_manager(){
 		if(_create.length != 0){
 			//从新建队列头处理标识符,然后加入_ready队列
-			var identifier = Math.floor(1+Math.random() * 1024);
+			var identifier = Math.floor(300+Math.random() * 32468); // 300 - 32767
 			var flag = 0;
 			for(var i in identifiers){
 				if(identifier == identifiers[i]){
