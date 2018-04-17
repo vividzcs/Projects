@@ -122,7 +122,8 @@
 	s(83) : 开始演示<br/>
 	q(81) : 结束演示<br/>
 	c(67) : 往create队列添加一个进程 (新加的进程优先级默认为5)<br/>
-	b(66) : 将当前正在运行的进程阻塞  (默认阻塞10s)
+	b(66) : 将当前正在运行的进程阻塞  (默认阻塞10s)<br/>
+	e(69) : 将当前进程异常退出
 	</span>
 </body>
 <script>
@@ -181,11 +182,13 @@
 		str = '<tr id="exitT"><td>进程ID</td><td>执行剩余时间</td><td>时间片</td><td>优先级</td><td>剩余阻塞时间</td><td>状态</td></tr>';
 		if(module._exit.length != 0){
 			for(var i in module._exit){
-			var exitQ = module._exit[i]
-			str += '<tr><td>'+ exitQ.identifier +
-			'</td><td>'+ exitQ.time +'</td><td>'+ exitQ.time_piece+'</td><td>'+ exitQ.priority +
-			'</td><td>'+ exitQ.block_time +'</td><td>'+ exitQ.status +'</td></tr>';
-			_exit.innerHTML = str;
+				// console.log(module._exit)
+				var exitQ = module._exit[i]
+					
+				str += '<tr><td>'+ exitQ.identifier +
+				'</td><td>'+ exitQ.time +'</td><td>'+ exitQ.time_piece+'</td><td>'+ exitQ.priority +
+				'</td><td>'+ exitQ.block_time +'</td><td>'+ exitQ.status +'</td></tr>';
+				_exit.innerHTML = str;
 			}
 		}else{
 			_exit.innerHTML = str;

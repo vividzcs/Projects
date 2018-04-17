@@ -100,15 +100,23 @@ var module = (function(){
 				}
 				break;
 			case 66:  //将当前正在运行的进程阻塞  (默认阻塞10s)
-				if(_running != null){
+				if(_running.length != 0){
 					var process = _running.shift();
 					process.block_time = default_block_time;
 					_block.push(process);
 					showMes('阻塞了一个进程: ' + process.identifier);
 				}
-				
 
 				break;
+			case 69:  //将当前进程异常退出
+			if(_running.length != 0){
+				var process = _running.shift();
+				process.status = 0;
+				_exit.push(process);
+				showMes('进程: ' + process.identifier + '异常退出');
+			}
+
+			break;
 		}
 	}
 	/**
@@ -154,7 +162,7 @@ var module = (function(){
 			//运行时间-1,生命周期-1
 			_running[0].time--;
 			_running[0].time_piece--;
-			console.log(_running[0].time)
+			console.log(_running)
 			if(_running[0].time <= 0){
 				//进程应该加入退出态
 				var process = _running.pop();
