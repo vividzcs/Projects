@@ -127,13 +127,12 @@
 	</span>
 </body>
 <script>
-	module.dispatch();
 	var _create = document.getElementById('create');	
 	var _ready = document.getElementById('ready');
 	var _block = document.getElementById('block');
 	var _exit = document.getElementById('exit');
 	var _running = document.getElementById('running');
-	var operate = document.getElementById('operate');
+	var operate = document.getElementById('operate');  //控制台展示信息
 	
 	function flushHtml(){
 		var str = '<tr id="createT"><td>进程ID</td><td>执行剩余时间</td><td>时间片</td><td>优先级</td><td>剩余阻塞时间</td><td>状态</td></tr>';
@@ -184,7 +183,7 @@
 			for(var i in module._exit){
 				// console.log(module._exit)
 				var exitQ = module._exit[i]
-					
+
 				str += '<tr><td>'+ exitQ.identifier +
 				'</td><td>'+ exitQ.time +'</td><td>'+ exitQ.time_piece+'</td><td>'+ exitQ.priority +
 				'</td><td>'+ exitQ.block_time +'</td><td>'+ exitQ.status +'</td></tr>';
