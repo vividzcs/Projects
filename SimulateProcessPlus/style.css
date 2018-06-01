@@ -1,0 +1,93 @@
+table{
+	border-collapse: collapse;
+}
+td{
+	border: 1px solid black;
+	width: 100px;
+}
+#blockT td{
+	background-color: #ec583a;
+	color: white;
+	border-color: white;
+}
+
+#exitT td{
+	background-color: #677077;
+	color: white;
+	border-color: white;
+}
+#readyT td{
+	background-color: #12CBC4;
+	color: white;
+	border-color: white;
+}
+#runningT td{
+	background-color: #C4E538;
+	color: white;
+	border-color: white;
+}
+#createT td{
+	background-color: #89bdd3;
+	color: white;
+	border-color: white;
+}
+.queue{
+	font-size: 30px;
+	font-weight: bolder;
+}
+
+.mes_box {
+	width: 400px;
+	height: 200px;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform:  translate(-50%,-50%);
+	background-color: #eee;
+	display: none;
+}
+
+.mes_box h3 {
+	font-size: 20px;
+	text-align: center;
+}
+
+.mes_box input {
+	margin:0 auto;
+}
+
+#t_input{
+	margin:0 auto;
+}
+
+#t_input td{
+	border: none;
+}
+
+.block_box {
+	width: 400px;
+	height: 200px;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform:  translate(-50%,-50%);
+	background-color: #eee;
+	display: none;
+}
+
+.block_box h3 {
+	font-size: 20px;
+	text-align: center;
+}
+
+.block_box input {
+	margin:0 auto;
+}
+
+#block_box table{
+	margin: 0 auto
+}
+
+#block_box td{
+	border: none;
+}
