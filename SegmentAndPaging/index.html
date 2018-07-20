@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>段页式存储管理</title>
+    <link rel="stylesheet" href="./index.css">
+</head>
+<body onkeydown="module.getCommand();">
+    <div id="segment_container">
+        <h3>内存总信息</h3>
+        <table id="segment_mes">
+            <tr><td>段号</td><td>段大小</td><td>基址</td><td>页号</td><td>页框号</td><td>是否已分配</td></tr>
+        </table>    
+    </div>
+    
+
+    <textarea id="operate" cols="70" rows="10"></textarea>  
+    <span style="color:#dacfcf;position: absolute;right: 10%;bottom: 10%">
+    键盘按键提示:<br/>
+    f: 转换<strong>FIFO模式</strong>和<strong>FRU</strong><br/>
+    s : 开始模拟<br/>
+    q : 结束演示<br/>
+    c : 创建进程<br/>
+    m : 地址映射
+    </span> 
+    <div class="mes_box" id="mes_box">
+        <h3>请输入地址映射信息</h3>
+        <table id="t_input">
+            <tr>
+                <td id="td_priority">进程号:</td>       
+                <td><input type="text" id="pcb_id" autofocus="true"></td>
+            </tr>
+            <tr>
+                <td id="td_priority">段号:</td>       
+                <td><input type="text" id="s_id" autofocus=true></td>
+            </tr>
+            <tr>
+                <td>地址:</td>
+                <td><input type="text" id="address" autofocus="true"></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><button id="confirm" style="margin:20px 20px 0 0" onclick="module.mapping(document.getElementById('pcb_id').value,document.getElementById('s_id').value,document.getElementById('address').value)">确认</button><button id="cancel" onclick="operater.cancel()">取消</button></td>
+            </tr>
+        </table>
+        
+    </div>
+
+    <div class="block_box" id="block_box">
+        <h3>输入进程信息</h3>
+        <table>
+            <tr>
+                <td>进程段数:</td>
+                <td><input type="text" id="s_number" autofocus=true></td>
+            </tr>
+            <tr>
+                <td colspan="2">请输入进程段号和相应大小(多个段用(,)隔开,多个段相应大小(大小即需要的页数)用(,)隔开)</td>
+            </tr>
+            <tr>
+                <td><input type="text" id="s_ids" autofocus=true placeholder="e.g: 1,2"></td>
+                <td><input type="text" id="s_sizes" autofocus=true placeholder="e.g: 3,3"></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><button id="bk_confirm" style="margin:20px 20px 0 0" onclick="module.create(document.getElementById('s_number').value,document.getElementById('s_ids').value,document.getElementById('s_sizes').value)">确认</button><button id="bk_cancel" onclick="operater.bk_cancel()">取消</button></td>
+            </tr>
+        </table>
+        
+    </div>
+    <div id="process_table">
+        <h3>进程的内存分配情况</h3>
+        <table><tr><td>段号</td><td>页号</td><td>页框号</td></tr></table>
+    </div>
+    <script src="./module.js"></script>
+    <script>
+    var segment_mes = document.getElementById('segment_mes');
+    var process_table = document.getElementById('process_table');
+
+    function output(){
+        var str = '<tr><td>段号</td><td>段大小</td><td>基址</td><td>页号</td><td>页框号</td><td>是否已分配</td></tr>';
+        var first = true;
+        for(var i in module.segments){
+            // console.log(i,module.segments)
+            var segment = module.segments[i];
+            str+='<tr><td rowspan="'+segment.length+'">'+segment.s_id+'</td><td rowspan="'+segment.length+'">'+segment.length+(segment.is_using ? "(已载入)":"(未载入)")+'</td><td rowspan="'+segment.length+'">'+segment.base+'</td>'
+            
+            for(var j in segment.pages){
+                // console.log(j,segment.pages)
+                var page = segment.pages[j];
+                if(first){
+                    str += '<td>'+page.p_id+'</td><td>'+page.frame_id+'</td><td>'+(page.is_using ? '已分配':'未分配')+'</td></tr>'    
+                    first = false;
+                }else{
+                    str += '<td>'+page.p_id+'</td><td>'+page.frame_id+'</td><td>'+(page.is_using ? '已分配':'未分配')+'</td></tr>'
+                }
+                
+            }
+            str+='</tr>'
+            
+        }
+        // console.log(first)
+        if (first) {
+            return;
+        }
+
+        first = true;
+        //刷新每个进程
+        var count = 0;
+        var resident_size = module.get_resident_size();
+        var str1 = '<h3>进程的内存分配情况</h3>';
+        for(var i in module.processes){
+            var process = module.processes[i];
+            // console.log(process)
+            if(process == undefined){
+                continue;
+            }
+            
+            str1 += '<table><tr><td>PID</td><td>段号</td><td>页号</td><td>页框号</td></tr>';
+            for(var j=0;j<resident_size;j++){
+                if(j<process.resident.length){ //未缺页
+                    var p = process.resident[j]; //页
+                    if(first){
+                        str1 += '<tr><td rowspan="'+resident_size+'">'+process.pcb_id+'</td><td>'+p.s_id+'</td><td>'+p.p_id+'</td><td>'+p.frame_id+'</td></tr>'    
+                        first = false;
+                    }else{
+                        str1 += '<tr><td>'+p.s_id+'</td><td>'+p.p_id+'</td><td>'+p.frame_id+'</td></tr>'    
+                    }
+                    
+                }else{ //缺页的
+                    if(first){
+                        str1 += '<tr><td rowspan="'+resident_size+'">'+process.pcb_id+'</td><td>未载入</td><td>未载入</td><td>未载入</td></tr>'
+                        first = false;
+                    }else
+                        str1 += '<tr><td>未载入</td><td>未载入</td><td>未载入</td></tr>'
+                }
+                
+            }
+            if( count != 0 && count % 2 == 0){
+                str1+= '</table><br/>'
+            }else{
+                str1+= '</table>'    
+            }
+            count++;
+            first = true;
+        }
+        segment_mes.innerHTML = str;
+        process_table.innerHTML = str1;
+
+    }
+
+    setInterval(output,1000)
+    
+    </script>
+</body>
+</html>
