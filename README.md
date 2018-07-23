@@ -9,3 +9,4 @@
 |SimulateProcessPlus|操作系统模仿进程加强版,基于时间片的多队列反馈式调度|2018-06-02|略|
 |SegmentAndPaging|段页式存储管理|2018-06|略|
 |SimulateFileSystem|模拟文件系统,参考Linux的命令,操作|2018-06|略|
+|draw|JavaScript模拟window的画板|之前的小项目,时间未知|略|

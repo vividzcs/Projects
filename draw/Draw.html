@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Draw</title>
+	<link rel="stylesheet" href="./draw.css">
+</head>
+<body>
+	<div id="content">
+		<ul class="nav">
+			<li id="author" onclick="alert('author:邓正成\nwebSite:www.ilearnspace.cn')">止戈</li>
+			<li onclick="canvasController.openCanvas(this);">打开</li>
+			<li>
+				保存
+				<p>
+					<ul class="sublist">
+						<li>
+							<input type="text" style="overflow:scroll" placeholder="请输入保存名" onchange="canvasController.saveCanvas(this.value);">
+						</li>
+					</ul>
+				</p>
+			</li>
+			<li value="1" onclick="canvasController.canvas.setAction(this.value)">
+				画笔形状
+				<ul class="sublist">
+					<li value="11" onclick="canvasController.canvas.setShape(this.value)">曲线</li>
+					<li value="12" onclick="canvasController.canvas.setShape(this.value)">直线</li>
+					<li value="13" onclick="canvasController.canvas.setShape(this.value)">圆</li>
+					<li value="15" onclick="canvasController.canvas.setShape(this.value)">椭圆</li>
+					<li  value="14" onclick="canvasController.canvas.setShape(this.value)">矩形</li>
+				</ul>
+			</li>
+			<li>
+				画笔粗细
+					<ul class="sublist">
+						<input type="range" min="1" max="20" step="1" onchange="canvasController.canvas.setStrokeWidth(this.value)" value="1">
+					</ul>
+			</li>
+			<li>
+				画笔颜色
+				<p>
+					<ul class="sublist">
+						<li><input type="color" onchange="canvasController.canvas.setColor(this.value)"></li>
+					</ul>
+				</p>
+			</li>
+			<li value="2" onclick="canvasController.canvas.setAction(this.value)">橡皮擦</li>
+			<li>
+				其他
+				<ul class="sublist">
+					<li onclick="canvasController.goBack()">撤销</li>
+					<li onclick="canvasController.reDraw()">重画</li>
+				</ul>
+			</li>
+		</ul>
+	</div>
+	<canvas id="myCanvas" class="myCanvas" width="1149" height="800"></canvas>
+	
+</body>
+<!-- <script src="./draw_2.js"></script> -->
+<script src="./draw_3.js"></script>
+</html>
